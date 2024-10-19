@@ -14,6 +14,7 @@ import { ActiveProductsComponent } from './components/reports/active-products/ac
 import { TopSalesComponent } from './components/reports/top-sales/top-sales.component';
 import { FrequentCustomersComponent } from './components/reports/frequent-customers/frequent-customers.component';
 import { SearchComponent } from './components/search/search.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { SearchComponent } from './components/search/search.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
