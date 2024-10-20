@@ -15,6 +15,13 @@ import { TopSalesComponent } from './components/reports/top-sales/top-sales.comp
 import { FrequentCustomersComponent } from './components/reports/frequent-customers/frequent-customers.component';
 import { SearchComponent } from './components/search/search.component';
 import { HttpClientModule } from '@angular/common/http';
+import { MaterialModule } from './material.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HomeComponent } from './components/home/home.component';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ComponentHomeComponent } from './components/component-home/component-home.component';
 
 @NgModule({
   declarations: [
@@ -28,13 +35,21 @@ import { HttpClientModule } from '@angular/common/http';
     ActiveProductsComponent,
     TopSalesComponent,
     FrequentCustomersComponent,
-    SearchComponent
+    SearchComponent,
+    HomeComponent,
+    HeaderComponent,
+    FooterComponent,
+    ComponentHomeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
