@@ -6,6 +6,7 @@ import { LoginResponse } from '../models/login-response';
 import { UsuarioDTO } from '../models/usuario-dto';
 import { environment } from '../environments/environment';
 import { RefreshTokendto } from '../models/refresh-tokendto';
+import { RegisterDto } from '../models/register-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -42,15 +43,13 @@ export class AuthService {
   }
 
 
-  registerUser(usuario: UsuarioDTO): Observable<UsuarioDTO> {
-    return this.http.post<UsuarioDTO>(`${this.apiUrl}/register`, usuario)
+  registerUser(usuario: RegisterDto): Observable<RegisterDto> {
+    return this.http.post<RegisterDto>(`${this.apiUrl}/register`, usuario)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 400 && error.error?.email) {
-            // Error específico de correo electrónico duplicado
             return throwError(() => ({ emailExists: error.error.email[0] }));
           }
-          // Otros errores
           return this.handleError(error);
         })
       );
@@ -96,6 +95,10 @@ export class AuthService {
       );
   }
 
+  isLoggedIn(): boolean {
+    const token = localStorage.getItem('access_token');
+    return !!token;
+  }
 
   private getUserFromStorage(): UsuarioDTO | null {
     const user = sessionStorage.getItem('username');
