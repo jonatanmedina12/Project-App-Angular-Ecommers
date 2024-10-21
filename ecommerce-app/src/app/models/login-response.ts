@@ -6,5 +6,6 @@ export interface LoginResponse {
     username: string;
     email: string;
     role: string;
+    activo_login:boolean;
     message?: string;
 }

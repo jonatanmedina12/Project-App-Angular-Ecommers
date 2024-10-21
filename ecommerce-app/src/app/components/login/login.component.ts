@@ -54,7 +54,7 @@ export class LoginComponent {
     this.authService.isLoggedIn();
     this.authService.currentUser.subscribe(user => {
       if (user) {
-        this.router.navigate(['/']);
+        this.router.navigate(['/main']);
       }
     });
   }
@@ -67,13 +67,12 @@ export class LoginComponent {
         .pipe(finalize(() => this.isLoading = false))
         .subscribe({
           next: (result) => {
-            console.log(result)
 
             if (result ) {
               this.loginError = 'Ya tienes una sesión activa. Por favor, cierra sesión antes de iniciar una nueva sesión.';
               console.log(this.loginError)
             } else {
-              this.router.navigate(['/']);
+              this.router.navigate(['/main']);
             }
           },
           error: (error: HttpErrorResponse) => {
@@ -85,7 +84,7 @@ export class LoginComponent {
 
   checkExistingSession() {
     if (this.authService.isLoggedIn() || localStorage.getItem('session_active')) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/main']);
     }
   }
 
