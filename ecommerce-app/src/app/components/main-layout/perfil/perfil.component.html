@@ -1,43 +1,33 @@
 <div class="profile-container">
-    <mat-card class="profile-card">
-      <mat-card-header>
-        <mat-card-title>Perfil de Usuario</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="profile-image">
-          <img [src]="userPhotoUrl" alt="Foto de perfil" class="user-photo">
-          <button mat-mini-fab color="primary" class="change-photo-button">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)">
-        </div>
-        
-        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-          <mat-form-field appearance="outline">
-            <mat-label>Nombre</mat-label>
-            <input matInput formControlName="nombre">
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Apellido</mat-label>
-            <input matInput formControlName="apellido">
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Correo Electrónico</mat-label>
-            <input matInput formControlName="email" type="email">
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Teléfono</mat-label>
-            <input matInput formControlName="telefono">
-          </mat-form-field>
-  
-          <div class="form-actions">
-            <button mat-raised-button color="primary" type="submit">Guardar Cambios</button>
-            <button mat-button type="button" (click)="resetForm()">Cancelar</button>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
+  <div class="profile-header">
+    <h2>Perfil de Usuario</h2>
+    <p>Actualiza tu información personal</p>
   </div>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="profile-form">
+    <div class="photo-upload">
+      <img [src]="photoUrl || 'assets/default-profile.png'" alt="Foto de perfil" class="current-photo">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput class="file-input" style="display: none;">
+      <button type="button" mat-stroked-button (click)="fileInput.click()" class="upload-btn">
+        Cambiar foto
+      </button>
+    </div>
+
+   
+
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput formControlName="email">
+      <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+        El correo electrónico es requerido
+      </mat-error>
+      <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+        Por favor, introduce un correo electrónico válido
+      </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="userForm.invalid" class="submit-btn">
+      Actualizar perfil
+    </button>
+  </form>
+</div>

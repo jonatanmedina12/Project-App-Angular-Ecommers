@@ -58,9 +58,14 @@
           <h3>Detalles de la Orden</h3>
           <div formArrayName="detalles">
             <div *ngFor="let detalle of detalles.controls; let i = index" [formGroupName]="i" class="detalle-item">
-              <mat-form-field appearance="fill">
-                <mat-label>ID del Producto</mat-label>
-                <input matInput formControlName="productoId" type="number">
+           
+              <mat-form-field appearance="outline">
+                <mat-label>Producto</mat-label>
+                <mat-select formControlName="productoId">
+                  <mat-option *ngFor="let producto of inventarios" [value]="producto.productoId">
+                    {{producto.nombreProducto}}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
               <mat-form-field appearance="fill">
                 <mat-label>Cantidad</mat-label>

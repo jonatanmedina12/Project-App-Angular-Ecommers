@@ -10,7 +10,7 @@ import bigDecimal from 'js-big-decimal';
 })
 export class ProductService {
 
-  private apiUrl = `http://localhost:8080/api/productos`;
+  private apiUrl = `${environment.API_URL}/productos`;
 
   constructor(private http: HttpClient) { }
   private convertToBigDecimal(producto: any): ProductoDTO {

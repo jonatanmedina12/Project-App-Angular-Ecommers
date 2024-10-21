@@ -9,10 +9,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { ProductsComponent } from './components/products/products.component';
 import { InventoryComponent } from './components/inventory/inventory.component';
 import { OrdersComponent } from './components/orders/orders.component';
-import { ReportsComponent } from './components/reports/reports.component';
-import { ActiveProductsComponent } from './components/reports/active-products/active-products.component';
-import { TopSalesComponent } from './components/reports/top-sales/top-sales.component';
-import { FrequentCustomersComponent } from './components/reports/frequent-customers/frequent-customers.component';
+
 import { SearchComponent } from './components/search/search.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
@@ -42,10 +39,7 @@ import { PerfilComponent } from './components/main-layout/perfil/perfil.componen
     ProductsComponent,
     InventoryComponent,
     OrdersComponent,
-    ReportsComponent,
-    ActiveProductsComponent,
-    TopSalesComponent,
-    FrequentCustomersComponent,
+
     SearchComponent,
     HomeComponent,
     HeaderComponent,
