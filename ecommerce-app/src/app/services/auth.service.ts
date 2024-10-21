@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginRequest } from '../models/login-request';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { LoginResponse } from '../models/login-response';
 import { UsuarioDTO } from '../models/usuario-dto';
 import { environment } from '../environments/environment';
@@ -13,29 +13,30 @@ import { RegisterDto } from '../models/register-dto';
 })
 export class AuthService {
   private apiUrl = `${environment.API_URL}/auth`;
-  private currentUserSubject: BehaviorSubject<UsuarioDTO | null>;
-  public currentUser: Observable<UsuarioDTO | null>;
+  private currentUserSubject: BehaviorSubject<LoginResponse | null>;
+  public currentUser: Observable<LoginResponse | null>;
 
   private token: string ;
   constructor(private http: HttpClient) {
     this.token=""
-    this.currentUserSubject = new BehaviorSubject<UsuarioDTO | null>(this.getUserFromStorage());
+    this.currentUserSubject = new BehaviorSubject<LoginResponse | null>(this.getUserFromStorage());
     this.currentUser = this.currentUserSubject.asObservable();
    }
 
-   login(loginRequest: LoginRequest): Observable<LoginResponse | string> {
+   login(loginRequest: LoginRequest): Observable<LoginResponse | string | boolean> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, loginRequest)
       .pipe(
         map(response => {
-          console.log(response)
+            console.log(response)
+          if (response.activo_login) {
 
-          if (!response.token) {
-
-            return "Error al login";
-
+            return true;
+            
           } else {
             this.setSession(response);
-            return response.role;
+            this.currentUserSubject.next(response);
+
+            return response;
           }
         }),
         catchError(this.handleError)
@@ -43,23 +44,12 @@ export class AuthService {
   }
 
 
-  registerUser(usuario: RegisterDto): Observable<RegisterDto> {
-    return this.http.post<RegisterDto>(`${this.apiUrl}/register`, usuario)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 400 && error.error?.email) {
-            return throwError(() => ({ emailExists: error.error.email[0] }));
-          }
-          return this.handleError(error);
-        })
-      );
-  }
-  
-  logout(): Observable<any> {
-    const userId = this.getUserId();
 
-    if (userId) {
-      return this.http.post(`${this.apiUrl}/logout/`, { id: userId }).pipe(
+  logout(): Observable<any> {
+    const username = this.getUserFromStorage();
+
+    if (username) {
+      return this.http.post(`${this.apiUrl}/logout`, { username: username}).pipe(
         tap(() => {
           this.currentUserSubject.next(null);
           this.clearSession();
@@ -82,7 +72,7 @@ export class AuthService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    return this.http.post<RefreshTokendto>(`${this.apiUrl}/token/refresh`, { access:token,username: username})
+    return this.http.post<RefreshTokendto>(`${this.apiUrl}/refresh-token`, {  username,token})
       .pipe(
         tap(response => {
           this.setSessionContinue(response);
@@ -94,13 +84,44 @@ export class AuthService {
         })
       );
   }
+  validateEmail(email: string): Observable<boolean> {
+    return this.http.post<boolean>(`${this.apiUrl}/validar-email`, { email });
+  }
+
+  resetPassword(username: string, password: string): Observable<any> {
+    
+    return this.http.post(`${this.apiUrl}/reset-password`, { username, password });
+  }
+
+  getAccessToken(): string | null {
+    return sessionStorage.getItem('access_token');
+  }
+
+  isAdmin(): boolean {
+    const user = this.getUserFromStorage();
+    return user ? user.role === 'ADMIN' : false;
+  }
 
   isLoggedIn(): boolean {
     const token = localStorage.getItem('access_token');
     return !!token;
   }
+  isTokenExpired(): boolean {
+    const token = this.getAccessToken();
+    if (!token) {
+      return true;
+    }
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expirationDate = new Date(payload.exp * 1000);
+      return expirationDate < new Date();
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return true;
+    }
+  }
 
-  private getUserFromStorage(): UsuarioDTO | null {
+  private getUserFromStorage(): LoginResponse | null {
     const user = sessionStorage.getItem('username');
     return user ? JSON.parse(user) : null;
   }

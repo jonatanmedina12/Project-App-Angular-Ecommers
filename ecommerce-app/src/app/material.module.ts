@@ -88,7 +88,8 @@ import { MatNativeDateModule, MatRippleModule as MatRippleModule2 } from '@angul
     MatSortModule,
     MatTableModule,
     MatNativeDateModule,
-    MatRippleModule2
+    MatRippleModule2,
+    
   ]
 })
 export class MaterialModule { }

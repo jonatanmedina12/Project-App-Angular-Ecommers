@@ -4,5 +4,6 @@ export interface InventarioDTO {
     productoId: number;
     nombreProducto: string;
     cantidad: number;
+    ubicacion:string;
 }
 
