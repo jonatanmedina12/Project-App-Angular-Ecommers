@@ -1,15 +1,121 @@
 <div class="container">
-    <h1 class="app-title">Mi Aplicación</h1>
-    
-    <div class="card-container">
-      <div *ngFor="let section of sections" class="card" [routerLink]="section.route">
-        <div class="card-content">
-          <mat-icon class="card-icon">{{section.icon}}</mat-icon>
-          <h2>{{section.name}}</h2>
-          <p>{{section.description}}</p>
-        </div>
+  <h1 class="app-title">Mi Aplicación</h1>
+  
+  <div class="card-container">
+    <div *ngFor="let section of sections" class="card" [routerLink]="section.route">
+      <div class="card-content">
+        <mat-icon class="card-icon">{{section.icon}}</mat-icon>
+        <h2>{{section.name}}</h2>
+        <p>{{section.description}}</p>
       </div>
     </div>
-
-    
   </div>
+
+  <h2 class="report-title">Reportes</h2>
+  
+  <mat-card class="report-card">
+    <mat-card-header>
+      <mat-card-title>Órdenes</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="order-list">
+        <div *ngFor="let orden of ordenes" class="order-item">
+          <div class="order-header">
+            <span class="order-id">Orden #{{ orden.id }}</span>
+            <span class="order-status">{{ orden.estado }}</span>
+          </div>
+          <div class="order-details">
+            <p><strong>Usuario:</strong> {{ orden.usuarioId }}</p>
+            <p><strong>Fecha:</strong> {{ orden.fecha | date:'short' }}</p>
+            <p><strong>Total:</strong> {{ orden.total }}</p>
+            <p><strong>Descuento:</strong> {{ orden.descuento  }}</p>
+          </div>
+        </div>
+      </div>
+      <mat-paginator [length]="totalElements"
+                     [pageSize]="size"
+                     [pageSizeOptions]="[5, 10, 25, 100]"
+                     (page)="cambiarPagina($event)">
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="report-card" *ngIf="estadisticas">
+    <mat-card-header>
+      <mat-card-title>Estadísticas de Órdenes</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-label">Total de órdenes:</span>
+          <span class="stat-value">{{ estadisticas.totalOrdenes }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Ventas totales:</span>
+          <span class="stat-value">{{ estadisticas.ventasTotales | currency }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Ventas promedio:</span>
+          <span class="stat-value">{{ estadisticas.ventasPromedio | currency }}</span>
+        </div>
+      </div>
+      
+      <h4>Órdenes por Estado</h4>
+      <div class="state-list">
+        <div *ngFor="let estado of estadisticas.ordenesPorEstado | keyvalue" class="state-item">
+          <span class="state-name">{{ estado.key }}:</span>
+          <span class="state-value">{{ estado.value }}</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="report-card">
+    <mat-card-header>
+      <mat-card-title>Top Ventas</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="top-sales-list">
+        <div *ngFor="let orden of topVentas; let i = index" class="top-sale-item">
+          <div class="top-sale-header">
+            <span class="top-sale-rank">#{{ i + 1 }}</span>
+            <span class="top-sale-id">Orden #{{ orden.id }}</span>
+            <span class="top-sale-status">{{ orden.estado }}</span>
+          </div>
+          <div class="top-sale-details">
+            <p><strong>Usuario:</strong> {{ orden.usuarioId }}</p>
+            <p><strong>Fecha:</strong> {{ orden.fecha | date:'short' }}</p>
+            <p><strong>Total:</strong> {{ orden.total  }}</p>
+            <p><strong>Descuento:</strong> {{ orden.descuento  }}</p>
+          </div>
+          <div class="top-sale-products">
+            <h5>Productos:</h5>
+            <ul>
+              <li *ngFor="let detalle of orden.detalles">
+                {{ detalle.nombreProducto }} - Cantidad: {{ detalle.cantidad }}, Precio: {{ detalle.precioUnitario | currency }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card class="report-card">
+      <mat-card-header>
+        <mat-card-title>Clientes Frecuentes</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="frequent-customers-list">
+          <div *ngFor="let cliente of clientesFrecuentes; let i = index" class="frequent-customer-item">
+            <div class="customer-rank">#{{ i + 1 }}</div>
+            <div class="customer-info">
+              <h4>{{ cliente.nombre }}</h4>
+              <p><strong>ID:</strong> {{ cliente.usuarioId }}</p>
+              <p><strong>Órdenes:</strong> {{ cliente.cantidadOrdenes }}</p>
+              <p><strong>Total gastado:</strong> {{ cliente.totalGastado  }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-card>
+</div>

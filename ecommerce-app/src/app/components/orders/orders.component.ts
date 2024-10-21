@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EstadisticasOrdenDTO } from 'src/app/models/estadisticas-orden-dto';
+import { InventarioDTO } from 'src/app/models/inventario-dto';
 import { OrdenDTO } from 'src/app/models/orden-dto';
 import { UsuarioDTO } from 'src/app/models/usuario-dto';
+import { InventoryService } from 'src/app/services/inventory.service';
 import { OrderService } from 'src/app/services/order.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -21,12 +23,14 @@ export class OrdersComponent implements OnInit  {
   totalElements = 0;
   usuarios: UsuarioDTO[] = [];
   mostrarFormulario = false;
+  inventarios: InventarioDTO[] = [];
 
   constructor(
     private ordenService: OrderService,
     private userService: UserService,
     private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private inventarioService : InventoryService
   ) {
     this.ordenForm = this.formBuilder.group({
       usuarioId: ['', Validators.required],
@@ -42,8 +46,16 @@ export class OrdersComponent implements OnInit  {
     this.cargarOrdenes();
     this.cargarEstadisticas();
     this.cargarUsuarios();
+    this.cargarInventarios();
   }
-
+  cargarInventarios() {
+    this.inventarioService.obtenerTodoElInventario().subscribe(
+      data => {
+        this.inventarios = [...data];
+      },
+      error => this.mostrarError('Error al cargar inventarios')
+    );
+  }
   cargarUsuarios() {
     this.userService.listarUsuarios().subscribe(
       usuarios => this.usuarios = usuarios,

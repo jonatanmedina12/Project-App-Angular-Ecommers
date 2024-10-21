@@ -18,13 +18,9 @@
       </div>
     </button>
     <mat-menu #menu="matMenu" [@menuAnimation]>
-      <button mat-menu-item >
+      <button mat-menu-item  [routerLink]="['/main/perfil']">
         <mat-icon>person</mat-icon>
         <span>Profile</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>settings</mat-icon>
-        <span>Settings</span>
       </button>
       <button mat-menu-item (click)="logout()" >
         <mat-icon>exit_to_app</mat-icon>

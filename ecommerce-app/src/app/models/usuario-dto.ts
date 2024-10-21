@@ -7,4 +7,5 @@ export interface UsuarioDTO {
   activo: boolean;
   rol: string;
   totalOrdenes?: number;
+  photo?:string
 }

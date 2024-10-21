@@ -121,7 +121,7 @@ export class AuthService {
     }
   }
 
-  private getUserFromStorage(): LoginResponse | null {
+  public getUserFromStorage(): LoginResponse | null {
     const user = sessionStorage.getItem('username');
     return user ? JSON.parse(user) : null;
   }
